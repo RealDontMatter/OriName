@@ -1,0 +1,14 @@
+{
+    "Items" : [
+        {
+            "Name" : "Stone",
+            "ImagePath" : "Icons/stone",
+            "StackSize" : 20
+        },
+        {
+            "Name" : "Wood",
+            "ImagePath" : "Icons/wood",
+            "StackSize" : 20
+        }
+    ]
+}
