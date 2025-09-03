@@ -1,66 +1,54 @@
-﻿using Controllers;
+﻿using Assets.Scripts.SO;
+using Components;
 using Models;
+using NUnit.Framework;
+using SO;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+using Utility;
 
 namespace Managers
 {
     class GameManager : MonoBehaviour
     {
-        public ItemsRegistry ItemsRegistry;
+
+        public Views.InventoryView InventoryView;
+        public Views.OverlayView OverlayView;
+
         public InterfaceMediator InterfaceMediator;
         public InventoryInterfaceController InventoryInterfaceController;
         public OverlayInterfaceController OverlayInterfaceController;
-        public static GameManager Instance { get; private set; }
-        public Inventory Inventory;
+        public PlayerController PlayerController;
+        public InteractablesSpawner InteractablesSpawner;
 
-        private void Awake()
-        {
-            if (Instance != null && Instance != this)
-            {
-                Debug.LogWarning("A duplicate GameManager instance was found. Destroying it.");
-                Destroy(gameObject);
-                return;
-            }
 
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
+        public HomeSettingsSO HomeSettingsSO;
+        public StartingItemsScriptableObject StartingItems;
+
+
+        [SerializeField]
+        private PlayerSettingsSO m_playerSettings;
+
+        private Inventory m_inventory;
+
 
         private void Start()
         {
-            Initialize();
-        }
-
-        private void Initialize()
-        {
-            ItemsRegistry.Initialize();
-            LoadInventory();
-
-            InitializeUI();
-        }
+            m_inventory = new();
+            m_inventory.AddItems(StartingItems.Items.DeepClone());
 
 
-        private void LoadInventory()
-        {
-            Inventory = new();
+            PlayerController.Initialize(m_inventory);
 
-            var i0 = ItemsRegistry.Instance.GetItemByName("Wood").Clone() as Item;
-            var i1 = ItemsRegistry.Instance.GetItemByName("Stone").Clone() as Item;
+            InteractablesSpawner.Initialize(HomeSettingsSO, PlayerController.gameObject);
 
-            i0.Count = 10;
-            i1.Count = 7;
+            OverlayView.Initialize();
+            InventoryView.Initialize(m_inventory.Size);
 
-            Inventory.SetItem(i0, 0);
-            Inventory.SetItem(i1, 1);
-        }
-
-        private void InitializeUI()
-        {
-            OverlayInterfaceController.Initialize();
-            InventoryInterfaceController.Initialize(Inventory);
+            OverlayInterfaceController.Initialize(PlayerController);
+            InventoryInterfaceController.Initialize(m_inventory, InventoryView);
             InterfaceMediator.Initialize();
         }
-
     }
 }
