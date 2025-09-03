@@ -1,37 +1,47 @@
+using System;
 using UnityEngine;
 using Utility;
 
 namespace Components
 {
-    public class Destroyable : Interactable
+    public class Destroyable : MonoBehaviour, IInteractable
     {
         [SerializeField] private Models.DestroyableData m_destroyableData;
-        private Models.Destroyable m_destroyable => (Models.Destroyable)data;
+
+        private Models.Destroyable m_data;
+        private GameObject m_player;
         private bool m_isInteracting;
         private float m_clock;
 
-        public bool IsInteracting => m_isInteracting;
-        public float Progress => m_clock / m_destroyable.Data.HitDuration;
+        public event Action InteractionStarted;
+        public event Action InteractionEnded;
 
-        public override void Interact()
+        public bool IsInteracting => m_isInteracting;
+        public float Progress => m_clock / m_data.Data.HitDuration;
+        public Vector3 Position => transform.position;
+
+
+        public void Interact()
         {
             m_isInteracting = true;
             m_clock = 0;
 
-            if (m_destroyable.HitPoints <= 0)
+            InteractionStarted?.Invoke();
+
+            if (m_data.HitPoints <= 0)
             {
                 m_isInteracting = false;
                 CollectReward();
+                InteractionEnded?.Invoke();
                 return;
             }
         }
-        public override bool CanInteract() => m_isInteracting == false;
+        public bool CanInteract() => m_isInteracting == false;
 
-        public override void Initialize(GameObject player)
+        public void Initialize(GameObject player)
         {
-            base.Initialize(player);
-
-            data = m_destroyableData.CreateDestroyable();
+            m_player = player;
+            m_data = m_destroyableData.CreateDestroyable();
         }
 
         void Update()
@@ -40,19 +50,23 @@ namespace Components
             
             m_clock += Time.deltaTime;
             
-            if (m_clock >= m_destroyable.Data.HitDuration)
+            if (m_clock >= m_data.Data.HitDuration)
             {
                 m_clock = 0;
-                m_destroyable.HitPoints--;
+                m_data.HitPoints--;
                 m_isInteracting = false;
             }
-            if (m_destroyable.HitPoints <= 0) CollectReward();
+            if (m_data.HitPoints <= 0) 
+            { 
+                CollectReward();
+                InteractionEnded?.Invoke();
+            }
         }
 
         void CollectReward()
         {
-            PlayerController playerCon = player.GetComponent<PlayerController>();
-            playerCon.Inventory.AddItems(m_destroyable.Data.ItemsToDrop.DeepClone());
+            PlayerController playerCon = m_player.GetComponent<PlayerController>();
+            playerCon.Inventory.AddItems(m_data.Data.ItemsToDrop.DeepClone());
             Destroy(gameObject);
         }
     }

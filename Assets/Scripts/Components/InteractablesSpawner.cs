@@ -1,8 +1,6 @@
 ﻿using SO;
 using UnityEngine;
-
-
-
+using Utility;
 using Random = UnityEngine.Random;
 
 namespace Components
@@ -44,7 +42,7 @@ namespace Components
                         Collider[] colliders = Physics.OverlapSphere(new Vector3(x, 0, z), radius);
                         foreach (Collider collider in colliders)
                         {
-                            if (collider.GetComponent<Interactable>() != null) foundInteractable = true;
+                            if (collider.GetComponent<IInteractable>() != null) foundInteractable = true;
                         }
                         if (++attempts > 100)
                         {
@@ -57,7 +55,7 @@ namespace Components
                     if (attempts > 100) break;
 
                     GameObject intObject = Instantiate(item.ToSpawn.Prefab, new Vector3(x, 0, z), Quaternion.identity, m_interactablesParentTransform);
-                    Interactable intComponent = intObject.GetComponent<Interactable>();
+                    IInteractable intComponent = intObject.GetComponent<IInteractable>();
                     intComponent.Initialize(m_player);
                 }
             }

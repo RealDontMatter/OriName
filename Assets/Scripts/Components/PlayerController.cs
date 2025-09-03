@@ -4,20 +4,21 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Utility;
 
 namespace Components
 {
     public class PlayerController : MonoBehaviour
     {
-        public Components.Interactable ClosestInteractable => m_closestInteractable;
+        public IInteractable ClosestInteractable => m_closestInteractable;
         public Models.Inventory Inventory => m_inventory;
 
 
         [SerializeField]
         private PlayerSettingsSO m_playerSettings;
         private Models.Inventory m_inventory;
-        private List<Components.Interactable> m_interactables;
-        private Components.Interactable m_closestInteractable;
+        private List<IInteractable> m_interactables;
+        private IInteractable m_closestInteractable;
         private bool m_isInitialized;
 
         private InputAction m_moveAction, m_useAction;
@@ -31,7 +32,7 @@ namespace Components
             m_moveAction = InputSystem.actions.FindAction("Move");
             m_useAction = InputSystem.actions.FindAction("Use");
 
-            m_interactables = new List<Components.Interactable>();
+            m_interactables = new List<IInteractable>();
         }
 
         public void Initialize(Models.Inventory inventory)
@@ -60,11 +61,11 @@ namespace Components
 
         private void SelectClosestInteractable()
         {
-            Interactable interactable = null;
+            IInteractable interactable = null;
             foreach (var item in m_interactables)
             {
                 if( interactable == null || 
-                    Vector3.Distance(transform.position, item.transform.position) < Vector3.Distance(transform.position, interactable.transform.position)
+                    Vector3.Distance(transform.position, item.Position) < Vector3.Distance(transform.position, interactable.Position)
                     )
                     interactable = item;
             }
@@ -74,7 +75,7 @@ namespace Components
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.TryGetComponent<Interactable>(out var component))
+            if (other.TryGetComponent<IInteractable>(out var component))
             {
                 m_interactables.Add(component);
                 SelectClosestInteractable();
@@ -82,7 +83,7 @@ namespace Components
         }
         private void OnTriggerExit(Collider other)
         {
-            if (other.TryGetComponent<Interactable>(out var component))
+            if (other.TryGetComponent<IInteractable>(out var component))
             {
                 m_interactables.Remove(component);
                 SelectClosestInteractable();
