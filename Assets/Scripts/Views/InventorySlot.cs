@@ -53,6 +53,7 @@ namespace Views
         {
             itemImage.transform.SetParent(transform.parent);
             itemImage.transform.SetAsLastSibling();
+            countText.gameObject.SetActive(false);
             DragBegined?.Invoke();
         }
 
@@ -66,6 +67,7 @@ namespace Views
         {
             itemImage.transform.SetParent(transform);
             countText.transform.SetAsLastSibling();
+            countText.gameObject.SetActive(Count > 1);
 
             var rectTransform = itemImage.GetComponent<RectTransform>();
             rectTransform.anchoredPosition = Vector2.zero;
