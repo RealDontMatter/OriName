@@ -41,7 +41,11 @@ namespace Managers
 
             PlayerController.Initialize(m_inventory);
 
-            InteractablesSpawner.Initialize(HomeSettingsSO, PlayerController.gameObject);
+            List<IInteractable> interactables = InteractablesSpawner.SpawnObjects();
+            interactables.ForEach((interactable) => { 
+                interactable.Initialize(PlayerController.gameObject);
+                PlayerController.RegisterInteractable(interactable); 
+            });
 
             OverlayView.Initialize();
             InventoryView.Initialize(m_inventory.Size);

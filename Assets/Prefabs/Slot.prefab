@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 6002293439260332965}
   - component: {fileID: 6661215739954467849}
   - component: {fileID: 8121941572378596188}
-  - component: {fileID: 45208630520532313}
   m_Layer: 0
   m_Name: Item
   m_TagString: Untagged
@@ -76,20 +75,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &45208630520532313
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 301900094007215191}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e0f6f91e85996e4d8f3745a1b079e8d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_image: {fileID: 0}
-  Canvas: {fileID: 0}
 --- !u!1 &696550590912050042
 GameObject:
   m_ObjectHideFlags: 0
@@ -176,6 +161,7 @@ GameObject:
   - component: {fileID: 6005413460476876401}
   - component: {fileID: 4789878514945597204}
   - component: {fileID: 299686075633658667}
+  - component: {fileID: 1241445920279715548}
   m_Layer: 0
   m_Name: Slot
   m_TagString: Untagged
@@ -225,7 +211,6 @@ MonoBehaviour:
   backgroundImage: {fileID: 3245207398848080185}
   itemImage: {fileID: 8121941572378596188}
   countText: {fileID: 150398204556688004}
-  EventTrigger: {fileID: 299686075633658667}
 --- !u!114 &299686075633658667
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -239,6 +224,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Delegates: []
+--- !u!225 &1241445920279715548
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3860651925342731876}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &5133694512725523517
 GameObject:
   m_ObjectHideFlags: 0

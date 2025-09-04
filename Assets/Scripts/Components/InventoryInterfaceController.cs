@@ -68,11 +68,15 @@ namespace Components
             m_view.SlotClicked += OnSlotClicked;
             m_view.SplitClicked += OnSplitClicked;
             m_view.DeleteClicked += OnDeleteClicked;
-            m_view.ItemDragged += (from, to) => { Debug.Log($"Item dragged from {from} to {to}"); };
+            m_view.ItemDragged += OnItemDragged;
 
             // First update
             m_view.UpdateItems(m_inventory.GetItems());
             SelectedSlot = -1;
+        }
+        private void OnItemDragged(int from, int to)
+        {
+            m_inventory.SwapItems(from, to);
         }
         private void OnDeleteClicked() => m_inventory.RemoveItem(m_selectedSlot);
         private void OnSplitClicked() => m_inventory.SplitItem(m_selectedSlot);

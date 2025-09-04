@@ -17,4 +17,6 @@ MonoBehaviour:
   InteractableMaximumPosition: {x: 80, y: 0, z: 80}
   StartingInteractables:
   - ToSpawn: {fileID: 11400000, guid: 85acd122a7dd65a4f8922dba73d7b7f3, type: 2}
-    Count: 20
+    Count: 40
+  - ToSpawn: {fileID: 11400000, guid: 7b4a74b954aaa8d43a0960ccf5379976, type: 2}
+    Count: 40

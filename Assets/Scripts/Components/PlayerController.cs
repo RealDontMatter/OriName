@@ -43,6 +43,15 @@ namespace Components
 
             m_isInitialized = true;
         }
+        public void RegisterInteractable(IInteractable interactable)
+        {
+            interactable.Destroying += () => 
+            {
+                m_interactables.Remove(interactable);
+                SelectClosestInteractable();
+            };
+        }
+
 
         private void Update()
         {

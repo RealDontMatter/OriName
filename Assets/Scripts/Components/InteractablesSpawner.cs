@@ -1,4 +1,5 @@
 ﻿using SO;
+using System.Collections.Generic;
 using UnityEngine;
 using Utility;
 using Random = UnityEngine.Random;
@@ -8,20 +9,13 @@ namespace Components
     class InteractablesSpawner : MonoBehaviour
     {
 
-        private HomeSettingsSO m_homeSettings;
-        private GameObject m_player;
-        [SerializeField] private Transform m_interactablesParentTransform;
+        [SerializeField] private HomeSettingsSO m_homeSettings;
+        [SerializeField] private Transform m_parentTransform;
 
-        public void Initialize(HomeSettingsSO homeSettingsSO, GameObject player)
+
+        public List<IInteractable> SpawnObjects()
         {
-            m_homeSettings = homeSettingsSO;
-            m_player = player;
-
-            SpawnObjects();
-        }
-
-        private void SpawnObjects()
-        {
+            List<IInteractable> interactables = new();
             foreach (var item in m_homeSettings.StartingInteractables)
             {
                 for (int i = 0; i < item.Count; i++)
@@ -54,11 +48,12 @@ namespace Components
 
                     if (attempts > 100) break;
 
-                    GameObject intObject = Instantiate(item.ToSpawn.Prefab, new Vector3(x, 0, z), Quaternion.identity, m_interactablesParentTransform);
-                    IInteractable intComponent = intObject.GetComponent<IInteractable>();
-                    intComponent.Initialize(m_player);
+                    GameObject intObject = Instantiate(item.ToSpawn.Prefab, new Vector3(x, 0, z), Quaternion.identity, m_parentTransform);
+                    var interactableComponent = intObject.GetComponent<IInteractable>();
+                    interactables.Add(interactableComponent);
                 }
             }
+            return interactables;
         }
     }
 }

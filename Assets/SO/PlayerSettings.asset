@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdac1997aa909b54fb011b55cb44ba7c, type: 3}
   m_Name: PlayerSettings
   m_EditorClassIdentifier: 
-  MovementSpeed: 20
+  MovementSpeed: 15
   InventorySize: 20

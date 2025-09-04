@@ -118,20 +118,30 @@ namespace Models
             ItemsChanged?.Invoke();
         }
 
-        public void SwapItems(int firstIndex, int secondIndex)
+        public void SwapItems(int fromIndex, int toIndex)
         {
-            if(firstIndex < 0 || firstIndex > Items.Count) return;
-            if(secondIndex <  0 || secondIndex > Items.Count) return;
+            if(fromIndex < 0 || fromIndex >= Items.Count) return;
+            if(toIndex <  0 || toIndex >= Items.Count) return;
 
-            Item 
-                firstItem = Items[firstIndex], 
-                secondItem = Items[secondIndex];
+            var fromItem = Items[fromIndex];
+            var toItem = Items[toIndex];
 
-            Items[firstIndex] = secondItem;
-            Items[secondIndex] = firstItem;
+            if (fromItem != null && toItem != null && fromItem.ItemType == toItem.ItemType)
+            {
+                var (_, remaining) = toItem.Add(fromItem.Count);
+                fromItem.Count = remaining;
+                if (fromItem.Count <= 0) Items[fromIndex] = null;
+            }
+            else
+            {
+                Items[fromIndex] = toItem;
+                Items[toIndex] = fromItem;
+            }
+
 
             ItemsChanged?.Invoke();
         }
+
 
         public void Sort() 
         {

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace Views
 {
-    public class InventoryView : MonoBehaviour, IPointerClickHandler
+    public class InventoryView : MonoBehaviour, IPointerClickHandler, IDropHandler
     {
         private List<InventorySlot> m_slots = new();
 
@@ -44,20 +44,19 @@ namespace Views
                 var slot = m_slots[i];
 
                 slot.Clicked += () => SlotClicked?.Invoke(index);
-                slot.Dropped += (eventData) =>
+                slot.DragBegined += () =>
                 {
-                    int fromIndex = index;
-                    int toIndex = -1;
-
                     for (int j = 0; j < m_slots.Count; j++)
                     {
-                        if (RectTransformUtility.RectangleContainsScreenPoint(m_slots[j].GetComponent<RectTransform>(), eventData.position))
-                        {
-                            Debug.Log($"Dropped on slot {j}");
-                            break;
-                        }
+                        m_slots[j].CanvasGroup.blocksRaycasts = false;
                     }
-
+                };
+                slot.DragEnded += () =>
+                {
+                    for (int j = 0; j < m_slots.Count; j++)
+                    {
+                        m_slots[j].CanvasGroup.blocksRaycasts = true;
+                    }
                 };
             }
 
@@ -108,6 +107,33 @@ namespace Views
         public void OnPointerClick(PointerEventData eventData)
         {
             Debug.Log("Clicked on InventoryView background" + eventData);
+        }
+
+        public void OnDrop(PointerEventData eventData)
+        {
+            var slot = eventData.pointerDrag.GetComponent<InventorySlot>();
+
+            int startIndex = m_slots.IndexOf(slot);
+            int endIndex = -1;
+
+            var mousePosition = eventData.position;
+
+            for (int i = 0; i < m_slots.Count; i++)
+            {
+                var rect = m_slots[i].GetComponent<RectTransform>();
+                if(RectTransformUtility.RectangleContainsScreenPoint(rect, mousePosition))
+                {
+                    endIndex = i;
+                    break;
+                }
+            }
+
+            if (startIndex != endIndex &&  
+                startIndex < m_slots.Count && startIndex >= 0 && 
+                endIndex < m_slots.Count && endIndex >= 0)
+            {
+                ItemDragged?.Invoke(startIndex, endIndex);
+            }
         }
     }
 }

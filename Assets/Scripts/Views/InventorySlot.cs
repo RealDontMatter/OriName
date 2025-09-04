@@ -1,18 +1,29 @@
 ﻿using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Views
 {
-    class InventorySlot : MonoBehaviour, IDropHandler, IPointerClickHandler
+    class InventorySlot : MonoBehaviour, 
+        IPointerClickHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
     {
         public GameObject background, item, count, frame;
         public Image backgroundImage, itemImage;
         public Text countText;
         
+        [HideInInspector] public CanvasGroup CanvasGroup;
+
+
         public Action Clicked;
-        public Action<PointerEventData> Dropped;
+        public event Action DragBegined, DragEnded;
+
+        void Start()
+        {
+            CanvasGroup = GetComponent<CanvasGroup>();
+            
+        }
 
         public int Count
         {
@@ -38,7 +49,29 @@ namespace Views
             set => this.frame.SetActive(value);
         }
 
-        public void OnDrop(PointerEventData eventData) => Dropped?.Invoke(eventData);
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            itemImage.transform.SetParent(transform.parent);
+            itemImage.transform.SetAsLastSibling();
+            DragBegined?.Invoke();
+        }
+
+        public void OnDrag(PointerEventData eventData)
+        {
+            itemImage.transform.position = eventData.position;
+        }
+
+
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            itemImage.transform.SetParent(transform);
+            countText.transform.SetAsLastSibling();
+
+            var rectTransform = itemImage.GetComponent<RectTransform>();
+            rectTransform.anchoredPosition = Vector2.zero;
+            DragEnded?.Invoke();
+        }
+
         public void OnPointerClick(PointerEventData eventData) => Clicked?.Invoke();
     }
 }
