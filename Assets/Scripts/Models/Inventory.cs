@@ -4,7 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 using Utility;
+using Debug = UnityEngine.Debug;
 
 namespace Models
 {
@@ -12,57 +14,44 @@ namespace Models
     {
         public event Action ItemsChanged;
 
-        public List<Item> Items;
+        public List<Item> m_items;
         
         public Inventory(int size = 20)
         {
-            Items = Enumerable.Repeat<Item>(null, size).ToList();
+            m_items = Enumerable.Repeat<Item>(null, size).ToList();
         }
 
-        /// <summary>READ-ONLY (Deep Clone)</summary>
-        public List<Item> GetItems() => Items;
 
-        public bool IsFull => !Items.Any(i => i == null || !i.IsFull );
-        public int Size => Items.Count;
-        public bool HasEmptySlots => Items.Any(i => i == null);
+        public List<Item> Items => m_items;
+        public bool IsFull => !m_items.Any(i => i == null || !i.IsFull );
+        public int Size => m_items.Count;
+        public bool HasEmptySlots => m_items.Any(i => i == null);
 
 
-        /// <returns>replacedItem</returns>
-        public Item SetItem(Item item, int index) 
+        public void SetItem(int index, Item item) 
         {
-            if (!checkIndex(index)) return null;
-            Item old = Items[index];
-            Items[index] = item;
+            if (!checkIndex(index)) 
+            {
+                Debug.LogError($"Inventory.SetItem: Invalid index '{index}', Inventory Size {m_items.Count}");
+                return;
+            }
+            m_items[index] = item;
 
             ItemsChanged?.Invoke();
-
-            return old;
         }
-        /// <returns>replacedItem</returns>
-        public Item SetItem(ItemType type, int count, int index) => SetItem(type.CreateItem(count), index);
-       
-        public (Item removed, bool success) RemoveItem(int index)
-        {
-            if (!checkIndex(index)) return (null, false);
-            Item old = Items[index];
-            Items[index] = null;
-
-            ItemsChanged?.Invoke();
-
-            return (old, true);
-        }
+        
 
         public (int added, int remaining) AddItem(ItemType type, int Count)
         {
             int startCount = Count;
 
             // fill existing slots
-            Item findItem = Items.Find(i => i != null && i.ItemType == type && !i.IsFull);
+            Item findItem = m_items.Find(i => i != null && i.ItemType == type && !i.IsFull);
             while (findItem != null && Count > 0) {
                 var (added, remaining) = findItem.Add(Count);
                 Count = remaining;
 
-                findItem = Items.Find(i => i != null && i.ItemType == type && !i.IsFull);
+                findItem = m_items.Find(i => i != null && i.ItemType == type && !i.IsFull);
             }
 
             // Continue only if items left
@@ -72,23 +61,21 @@ namespace Models
             }
 
             // Fill empty slots
-            int emptyIndex = Items.IndexOf(null);
+            int emptyIndex = m_items.IndexOf(null);
             while ( emptyIndex != -1 && Count > 0)
             {
                 Item emptyItem = new Item(type, 0);
                 var (added, remaining) = emptyItem.Add(Count);
                 Count = remaining;
 
-                Items[emptyIndex] = emptyItem;
+                m_items[emptyIndex] = emptyItem;
 
-                emptyIndex = Items.IndexOf(null);
+                emptyIndex = m_items.IndexOf(null);
             }
             ItemsChanged?.Invoke();
             return (Count, startCount - Count);
         }
         public (int added, int remaining) AddItem(Item item) => AddItem(item.ItemType, item.Count);
-
-        /// <returns>Remaining Items</returns>
         public List<Item> AddItems(IEnumerable<Item> items)
         {
             List<Item> list = new();
@@ -101,55 +88,68 @@ namespace Models
             return list;
         }
         
-        /// <param name="item">Item that is present in Inventory, NOT COPY</param>
-        public void SplitItem(Item item) => SplitItem(Items.IndexOf(item));
         public void SplitItem(int index)
         {
-            if (index < 0 || index >= Items.Count || !HasEmptySlots) return ;
+            if (!checkIndex(index))
+            {
+                Debug.LogError($"Inventory.SplitItem: Invalid index '{index}', Inventory Size {m_items.Count}"); 
+                return;
+            }
+            if (!HasEmptySlots) 
+            {
+                Debug.LogWarning($"Inventory.SplitItem: No empty slots available");
+                return;
+            }
 
-            Item givenSlotItem = Items[index];
+            Item givenSlotItem = m_items[index];
 
-            int emptySlotIndex = Items.IndexOf(null);
+            int emptySlotIndex = m_items.IndexOf(null);
             Item emptySlotItem = givenSlotItem.ItemType.CreateItem((givenSlotItem.Count + 1) / 2);
-            Items[emptySlotIndex] = emptySlotItem;
+            m_items[emptySlotIndex] = emptySlotItem;
 
             givenSlotItem.Count /= 2;
 
             ItemsChanged?.Invoke();
         }
-
         public void SwapItems(int fromIndex, int toIndex)
         {
-            if(fromIndex < 0 || fromIndex >= Items.Count) return;
-            if(toIndex <  0 || toIndex >= Items.Count) return;
+            if(!checkIndex(fromIndex))
+            {
+                Debug.LogError($"Inventory.SwapItems: Invalid fromIndex '{fromIndex}', Inventory Size {m_items.Count}");
+                return;
+            }
+            if (!checkIndex(toIndex))
+            {
+                Debug.LogError($"Inventory.SwapItems: Invalid toIndex '{toIndex}', Inventory Size {m_items.Count}");
+                return;
+            }
 
-            var fromItem = Items[fromIndex];
-            var toItem = Items[toIndex];
+            var fromItem = m_items[fromIndex];
+            var toItem = m_items[toIndex];
 
             if (fromItem != null && toItem != null && fromItem.ItemType == toItem.ItemType)
             {
                 var (_, remaining) = toItem.Add(fromItem.Count);
                 fromItem.Count = remaining;
-                if (fromItem.Count <= 0) Items[fromIndex] = null;
+                if (fromItem.Count <= 0) m_items[fromIndex] = null;
             }
             else
             {
-                Items[fromIndex] = toItem;
-                Items[toIndex] = fromItem;
+                m_items[fromIndex] = toItem;
+                m_items[toIndex] = fromItem;
             }
 
 
             ItemsChanged?.Invoke();
         }
+        private bool checkIndex(int index) => index >= 0 && index < m_items.Count;
 
-
+        // TODO---------------
         public void Sort() 
         {
-            Items.Sort((i1, i2) => i1.ItemType.Name.CompareTo(i2.ItemType.Name));
+            m_items.Sort((i1, i2) => i1.ItemType.Name.CompareTo(i2.ItemType.Name));
             ItemsChanged?.Invoke();
         }
-
-        private bool checkIndex(int index) => index >= 0 && index < Items.Count;
-
+        //---------------------
     }
 }
