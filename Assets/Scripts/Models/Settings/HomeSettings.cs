@@ -5,12 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace SO
+namespace Models.Settings
 {
-    [CreateAssetMenu(menuName = "SO/HomeSettings")]
-    public class HomeSettingsSO : ScriptableObject
+    [CreateAssetMenu(menuName = "Models/Settings/Home Settings")]
+    public class HomeSettings : ScriptableObject
     {
-        // --------- Interactables --------------
         public float InteractableMinimumRadius;
         public Vector3 InteractableMinimumPosition;
         public Vector3 InteractableMaximumPosition;
@@ -19,7 +18,7 @@ namespace SO
         [Serializable]
         public struct InteractablesSpawnInfo
         {
-            public Models.InteractableData ToSpawn;
+            public GameObject Prefab;
             public int Count;
         }
     }

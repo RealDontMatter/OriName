@@ -150,6 +150,7 @@ Transform:
   m_Children:
   - {fileID: 372618594}
   - {fileID: 847491545246277668}
+  - {fileID: 728977040}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &301664433
@@ -653,7 +654,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 247985462}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &832575517
 GameObject:
@@ -1027,7 +1028,8 @@ MonoBehaviour:
   OverlayInterfaceController: {fileID: 1284368091900383016}
   PlayerController: {fileID: 2095544795}
   InteractablesSpawner: {fileID: 8864593733450820656}
-  HomeSettingsSO: {fileID: 11400000, guid: daec4e27cafaa204591d9e5bc9ef51f6, type: 2}
+  InteractablesParent: {fileID: 1871242636}
+  HomeSettings: {fileID: 11400000, guid: 16fa89d491df44548aa7827448d91858, type: 2}
   StartingItems: {fileID: 11400000, guid: 6297cf33913affb479ad4e1f669e181e, type: 2}
   m_playerSettings: {fileID: 11400000, guid: fb405f780bd17e948b803e08d4da5bc1, type: 2}
 --- !u!114 &4752468696879233358
@@ -1422,7 +1424,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74e0ec4fdfddd6742abb309b873551c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_interactablesParentTransform: {fileID: 1871242637}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1431,7 +1432,6 @@ SceneRoots:
   - {fileID: 832575519}
   - {fileID: 247985462}
   - {fileID: 8864593733450820655}
-  - {fileID: 728977040}
   - {fileID: 1994971479}
   - {fileID: 2095544792}
   - {fileID: 1871242637}

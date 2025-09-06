@@ -9,9 +9,14 @@ namespace Components
     class InteractablesSpawner : MonoBehaviour
     {
 
-        [SerializeField] private HomeSettingsSO m_homeSettings;
-        [SerializeField] private Transform m_parentTransform;
+        private Models.Settings.HomeSettings m_homeSettings;
+        private Transform m_parentTransform;
 
+        public void Initialize(Models.Settings.HomeSettings homeSettings, Transform parent)
+        {
+            m_homeSettings = homeSettings;
+            m_parentTransform = parent;
+        }
 
         public List<IInteractable> SpawnObjects()
         {
@@ -48,7 +53,7 @@ namespace Components
 
                     if (attempts > 100) break;
 
-                    GameObject intObject = Instantiate(item.ToSpawn.Prefab, new Vector3(x, 0, z), Quaternion.identity, m_parentTransform);
+                    GameObject intObject = Instantiate(item.Prefab, new Vector3(x, 0, z), Quaternion.identity, m_parentTransform);
                     var interactableComponent = intObject.GetComponent<IInteractable>();
                     interactables.Add(interactableComponent);
                 }

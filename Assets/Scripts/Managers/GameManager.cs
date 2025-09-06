@@ -22,8 +22,10 @@ namespace Managers
         public PlayerController PlayerController;
         public InteractablesSpawner InteractablesSpawner;
 
+        public GameObject InteractablesParent;
 
-        public HomeSettingsSO HomeSettingsSO;
+
+        public Models.Settings.HomeSettings HomeSettings;
         public StartingItemsScriptableObject StartingItems;
 
 
@@ -41,6 +43,8 @@ namespace Managers
 
             PlayerController.Initialize(m_inventory);
 
+
+            InteractablesSpawner.Initialize(HomeSettings, InteractablesParent.transform);
             List<IInteractable> interactables = InteractablesSpawner.SpawnObjects();
             interactables.ForEach((interactable) => { 
                 interactable.Initialize(PlayerController.gameObject);
