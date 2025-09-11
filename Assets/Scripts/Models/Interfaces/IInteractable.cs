@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Utility
+namespace Models.Interfaces
 {
     public interface IInteractable
     {

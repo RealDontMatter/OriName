@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Utility;
+using Models.Interfaces;
+using System.Linq;
 
 namespace Managers
 {
@@ -38,7 +40,12 @@ namespace Managers
         private void Start()
         {
             m_inventory = new();
-            m_inventory.AddItems(StartingItems.Items.DeepClone());
+            foreach (var entry in StartingItems.Items)
+            {
+                var item = entry.Type.CreateItem(entry.Count);
+                Debug.Log($"Starting item: {item.ItemType.Name}, {item.GetType()}");
+                m_inventory.AddItem(item);
+            }
 
 
             PlayerController.Initialize(m_inventory);
@@ -50,6 +57,7 @@ namespace Managers
                 interactable.Initialize(PlayerController.gameObject);
                 PlayerController.RegisterInteractable(interactable); 
             });
+
 
             OverlayView.Initialize();
             InventoryView.Initialize(m_inventory.Size);

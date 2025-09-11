@@ -1,9 +1,4 @@
-﻿using SO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using UnityEngine;
 
 namespace Models
@@ -11,43 +6,70 @@ namespace Models
     [Serializable]
     public class Item : ICloneable
     {
-        [SerializeField] private ItemType m_itemType;
-        [SerializeField] private int m_count;
+        public Action<Item> Emptied;
+
+        [SerializeField] protected ItemType m_itemType;
+        [SerializeField] protected int m_count;
 
         public ItemType ItemType => m_itemType;
-        public int Count { get => m_count; set => m_count = value; }
+        public int Count => m_count;
         public int MaxStack => m_itemType.MaxStack;
         public bool IsFull => m_count >= MaxStack;
+        public bool IsEmpty => m_count <= 0;
+
+        // Initialization
         public Item(ItemType type, int count)
         {
             m_itemType = type;
             m_count = count;
         }
+        public Item(Item other) : this(other.ItemType, other.Count) { }
+        public virtual object Clone() => new Item(this);
 
-        public (int added, int remaining) Add(int countToAdd)
+        // Logic
+        public (int added, int remaining) Add(int count)
         {
             if (m_count >= MaxStack)
-                return (0, countToAdd);
+                return (0, count);
             int spaceLeft = MaxStack - m_count;
-            int toAdd = Math.Min(spaceLeft, countToAdd);
+            int toAdd = Math.Min(spaceLeft, count);
             m_count += toAdd;
-            int remaining = countToAdd - toAdd;
+            int remaining = count - toAdd;
             return (toAdd, remaining);
         }
-        public (int added, int remaining) Add(Item itemToAdd)
+        public (int removed, int remaining) Remove(int count)
         {
-            if (itemToAdd.ItemType != ItemType)
-                return (0, itemToAdd.Count);
-            return Add(itemToAdd.Count);
+            int toRemove = Math.Min(m_count, count);
+            int remainingToRemove = count - toRemove;
+            m_count -= toRemove;
+            if (m_count <= 0)
+            {
+                m_count = 0;
+            }
+            return (toRemove, remainingToRemove);
         }
+        public bool CanSplit() => m_count > 1;
+        public Item Split()
+        {
+            if (!CanSplit())
+            {
+                Debug.LogError("Cannot split an item with count less than 2.");
+                return null;
+            }
+            int halfCount = m_count / 2;
+            m_count -= halfCount;
+            return new Item(m_itemType, halfCount);
+        }
+        public void FillFrom(Item other)
+        {
+            if (other == null || other.ItemType != this.ItemType)
+            {
+                Debug.LogWarning("Cannot fill from the provided item. (null or different type)");
+                return; 
+            }
 
-
-
-
-
-
-
-        public Item(Item other) : this(other.ItemType, other.Count) { }
-        public object Clone() => new Item(this);
+            var (added, _) = Add(other.Count);
+            other.Remove(added);
+        }
     }
 }

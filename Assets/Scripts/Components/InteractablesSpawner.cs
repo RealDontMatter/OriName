@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Utility;
+using Models.Interfaces;
 using Random = UnityEngine.Random;
 
 namespace Components

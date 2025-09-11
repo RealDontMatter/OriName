@@ -10,15 +10,16 @@ namespace Models
     [CreateAssetMenu(menuName = "Models/DestroyableData")]
     public class DestroyableData : InteractableData
     {
-        [SerializeField] private List<Item> m_itemsToDrop, m_requiredItems;
+        [SerializeField] private List<Item> m_itemsToDrop;
         [SerializeField] private int m_totalHitPoints;
         [SerializeField] private float m_hitDuration;
+        [SerializeField] private ConsumableItemType m_toolType;
 
         public IEnumerable<Item> ItemsToDrop => m_itemsToDrop;
-        public IEnumerable<Item> RequiredItems => m_requiredItems;
+        public ConsumableItemType ToolType => m_toolType;
         public int TotalHitPoints => m_totalHitPoints;
         public float HitDuration => m_hitDuration;
 
-        public Destroyable CreateDestroyable() => new Destroyable(this);
+        public virtual Destroyable CreateDestroyable() => new Destroyable(this);
     }
 }

@@ -17,6 +17,6 @@ MonoBehaviour:
   InteractableMaximumPosition: {x: 80, y: 0, z: 80}
   StartingInteractables:
   - Prefab: {fileID: 4992708757487253692, guid: ddb14f07651f75c47ac16bcd670e4e86, type: 3}
-    Count: 40
+    Count: 20
   - Prefab: {fileID: 3259758049492829128, guid: 96878f433a3981645810fab989dc98f5, type: 3}
-    Count: 40
+    Count: 20

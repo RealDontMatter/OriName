@@ -10,6 +10,12 @@ namespace SO
     [CreateAssetMenu(menuName = "SO/StartingItems")]
     public class StartingItemsScriptableObject : ScriptableObject
     {
-        public List<Models.Item> Items;
+        public List<ItemEntry> Items;
+
+        [Serializable] public struct ItemEntry
+        {
+            public Models.ItemType Type;
+            public int Count;
+        }
     }
 }

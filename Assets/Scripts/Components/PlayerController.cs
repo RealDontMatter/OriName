@@ -1,10 +1,10 @@
 using Assets.Scripts.SO;
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Utility;
+using Models.Interfaces;
 
 namespace Components
 {

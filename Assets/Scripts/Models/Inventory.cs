@@ -37,9 +37,34 @@ namespace Models
             }
             m_items[index] = item;
 
+            item.Emptied -= OnItemEmptied;
+            item.Emptied += OnItemEmptied;
+
+
             ItemsChanged?.Invoke();
         }
-        
+
+        private void OnItemEmptied(Item item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveItem(int index)
+        {
+            if (!checkIndex(index))
+            {
+                Debug.LogError($"Inventory.RemoveItem: Invalid index '{index}', Inventory Size {m_items.Count}");
+                return;
+            }
+
+            if (m_items != null)
+            {
+                m_items[index].Emptied -= OnItemEmptied;
+            }
+            m_items[index] = null;
+            
+            ItemsChanged?.Invoke();
+        }
 
         public (int added, int remaining) AddItem(ItemType type, int Count)
         {
@@ -64,7 +89,9 @@ namespace Models
             int emptyIndex = m_items.IndexOf(null);
             while ( emptyIndex != -1 && Count > 0)
             {
-                Item emptyItem = new Item(type, 0);
+                Item emptyItem = type.CreateItem(0);
+                emptyItem.Emptied -= OnItemEmptied;
+                emptyItem.Emptied += OnItemEmptied;
                 var (added, remaining) = emptyItem.Add(Count);
                 Count = remaining;
 
@@ -76,16 +103,11 @@ namespace Models
             return (Count, startCount - Count);
         }
         public (int added, int remaining) AddItem(Item item) => AddItem(item.ItemType, item.Count);
-        public List<Item> AddItems(IEnumerable<Item> items)
+        public void AddItems(IEnumerable<Item> items)
         {
-            List<Item> list = new();
             foreach (var item in items)
-            {
-                var (_, remaining) = AddItem(item);
-                if(remaining > 0) list.Add(new Item(item.ItemType, remaining));
-            }
+                AddItem(item);
             ItemsChanged?.Invoke();
-            return list;
         }
         
         public void SplitItem(int index)
@@ -101,14 +123,24 @@ namespace Models
                 return;
             }
 
+
             Item givenSlotItem = m_items[index];
 
+            if (givenSlotItem == null)
+            {
+                Debug.LogWarning($"Inventory.SplitItem: No item in the given slot {index}");
+                return;
+            }
+            if (!givenSlotItem.CanSplit())
+            {
+                Debug.LogWarning($"Inventory.SplitItem: Item in the given slot {index} cannot be split");
+                return;
+            }
+
             int emptySlotIndex = m_items.IndexOf(null);
-            Item emptySlotItem = givenSlotItem.ItemType.CreateItem((givenSlotItem.Count + 1) / 2);
-            m_items[emptySlotIndex] = emptySlotItem;
-
-            givenSlotItem.Count /= 2;
-
+            Items[emptySlotIndex] = givenSlotItem.Split();
+            Items[emptySlotIndex].Emptied -= OnItemEmptied;
+            Items[emptySlotIndex].Emptied += OnItemEmptied;
             ItemsChanged?.Invoke();
         }
         public void SwapItems(int fromIndex, int toIndex)
@@ -129,9 +161,8 @@ namespace Models
 
             if (fromItem != null && toItem != null && fromItem.ItemType == toItem.ItemType)
             {
-                var (_, remaining) = toItem.Add(fromItem.Count);
-                fromItem.Count = remaining;
-                if (fromItem.Count <= 0) m_items[fromIndex] = null;
+                toItem.FillFrom(fromItem);
+                if (fromItem.IsEmpty) m_items[fromIndex] = null;
             }
             else
             {
@@ -139,9 +170,11 @@ namespace Models
                 m_items[toIndex] = fromItem;
             }
 
-
             ItemsChanged?.Invoke();
         }
+        public bool HasItem(ItemType type) => m_items.Any(i => i != null && i.ItemType == type);
+        public Item GetItem(ItemType type) => m_items.FirstOrDefault(i => i != null && i.ItemType == type);
+
         private bool checkIndex(int index) => index >= 0 && index < m_items.Count;
 
         // TODO---------------

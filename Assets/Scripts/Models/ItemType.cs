@@ -18,6 +18,6 @@ namespace Models
         public Sprite Image => m_image;
         public int MaxStack => m_maxStack;
 
-        public Item CreateItem(int count = 1) => new Item(this, count);
+        public virtual Item CreateItem(int count = 1) => new Item(this, count);
     }
 }
