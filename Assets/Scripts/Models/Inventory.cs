@@ -47,6 +47,8 @@ namespace Models
 
         private void OnItemEmptied(Item item)
         {
+            m_items.Remove(item);
+            ItemsChanged?.Invoke();
         }
 
         public void RemoveItem(int index)

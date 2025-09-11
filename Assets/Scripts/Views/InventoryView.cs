@@ -81,8 +81,26 @@ namespace Views
 
                 slot.ItemSprite = item?.ItemType.Image;
                 slot.Count = item?.Count ?? 0;
+
+                if (item is ConsumableItem consumable)
+                    slot.Duration = consumable.HealthPercentage;
+                else
+                    slot.Duration = 0;
             }
         }
+
+        public void UpdateItem(int index, Item item)
+        {
+            if (index < 0 || index >= m_slots.Count) return;
+            var slot = m_slots[index];
+            slot.ItemSprite = item?.ItemType.Image;
+            slot.Count = item?.Count ?? 0;
+            if (item is ConsumableItem consumable)
+                slot.Duration = consumable.HealthPercentage ;
+            else
+                slot.Duration = 0;
+        }
+
         public void SelectItem(int index, bool selected = true)
         {
             if ( index < 0 || index >= m_slots.Count) return;

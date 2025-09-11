@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Models
 {
@@ -7,6 +8,7 @@ namespace Models
     public class Item : ICloneable
     {
         public Action<Item> Emptied;
+        public UnityAction Changed;
 
         [SerializeField] protected ItemType m_itemType;
         [SerializeField] protected int m_count;
@@ -35,6 +37,7 @@ namespace Models
             int toAdd = Math.Min(spaceLeft, count);
             m_count += toAdd;
             int remaining = count - toAdd;
+            Changed?.Invoke();
             return (toAdd, remaining);
         }
         public (int removed, int remaining) Remove(int count)
@@ -46,6 +49,8 @@ namespace Models
             {
                 m_count = 0;
             }
+            Emptied?.Invoke(this);
+            Changed?.Invoke();
             return (toRemove, remainingToRemove);
         }
         public bool CanSplit() => m_count > 1;
@@ -59,6 +64,7 @@ namespace Models
 
             int halfCount = m_count / 2;
             m_count -= halfCount;
+            Changed?.Invoke();
             return (ItemType, halfCount);
         }
         public void FillFrom(Item other)
@@ -71,6 +77,7 @@ namespace Models
 
             var (added, _) = Add(other.Count);
             other.Remove(added);
+            Changed?.Invoke();
         }
     }
 }

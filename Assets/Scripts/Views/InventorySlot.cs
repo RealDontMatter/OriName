@@ -10,7 +10,7 @@ namespace Views
         IPointerClickHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
     {
         public GameObject background, item, count, frame;
-        public Image backgroundImage, itemImage;
+        public Image backgroundImage, itemImage, durationImage;
         public Text countText;
         
         [HideInInspector] public CanvasGroup CanvasGroup;
@@ -25,6 +25,11 @@ namespace Views
             
         }
 
+        public float Duration
+        {
+            get => durationImage.fillAmount;
+            set => durationImage.fillAmount = value;
+        }
         public int Count
         {
             get => int.Parse(this.countText.text);

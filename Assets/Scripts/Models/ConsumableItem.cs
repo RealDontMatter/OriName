@@ -16,6 +16,7 @@ namespace Models
         private int m_hitPoints;
 
         public int HitPoints => m_hitPoints;
+        public float HealthPercentage => (float)m_hitPoints / ConsumableData.HitPoints;
 
         // Initialization
         public ConsumableItem(ConsumableItemType type, int count) : base(type, count)
@@ -40,6 +41,7 @@ namespace Models
         public void Consume()
         {
             m_hitPoints--;
+            Changed?.Invoke();
             if (m_hitPoints <= 0)
             {
                 m_hitPoints = ConsumableData.HitPoints;

@@ -49,6 +49,14 @@ namespace Components
                 m_view.UpdateItems(m_inventory.m_items);
                 SelectedSlot = SelectedSlot;
             };
+            foreach(var item in m_inventory.m_items)
+            {
+                if(item != null)
+                    item.Changed += () => {
+                        m_view.UpdateItems(m_inventory.m_items);
+                        SelectedSlot = SelectedSlot;
+                    };
+            }
         }
         private bool CanSplitItem()
         {
