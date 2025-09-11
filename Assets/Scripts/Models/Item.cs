@@ -49,16 +49,17 @@ namespace Models
             return (toRemove, remainingToRemove);
         }
         public bool CanSplit() => m_count > 1;
-        public Item Split()
+        public (ItemType newItemType, int newItemCount) Split()
         {
             if (!CanSplit())
             {
                 Debug.LogError("Cannot split an item with count less than 2.");
-                return null;
+                return (null, 0);
             }
+
             int halfCount = m_count / 2;
             m_count -= halfCount;
-            return new Item(m_itemType, halfCount);
+            return (ItemType, halfCount);
         }
         public void FillFrom(Item other)
         {

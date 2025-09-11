@@ -5,20 +5,21 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Utility;
 using Models.Interfaces;
+using UnityEngine.Events;
 
 namespace Components
 {
-    public class PlayerController : MonoBehaviour
+    public class PlayerComponent : MonoBehaviour
     {
-        public IInteractable ClosestInteractable => m_closestInteractable;
+        public DestroyableComponent ClosestInteractable => m_closestInteractable;
         public Models.Inventory Inventory => m_inventory;
 
 
         [SerializeField]
         private PlayerSettingsSO m_playerSettings;
         private Models.Inventory m_inventory;
-        private List<IInteractable> m_interactables;
-        private IInteractable m_closestInteractable;
+        private List<DestroyableComponent> m_interactables;
+        private DestroyableComponent m_closestInteractable;
         private bool m_isInitialized;
 
         private InputAction m_moveAction, m_useAction;
@@ -32,7 +33,7 @@ namespace Components
             m_moveAction = InputSystem.actions.FindAction("Move");
             m_useAction = InputSystem.actions.FindAction("Use");
 
-            m_interactables = new List<IInteractable>();
+            m_interactables = new List<DestroyableComponent>();
         }
 
         public void Initialize(Models.Inventory inventory)
@@ -43,7 +44,7 @@ namespace Components
 
             m_isInitialized = true;
         }
-        public void RegisterInteractable(IInteractable interactable)
+        public void RegisterInteractable(DestroyableComponent interactable)
         {
             interactable.Destroying += () => 
             {
@@ -70,7 +71,7 @@ namespace Components
 
         private void SelectClosestInteractable()
         {
-            IInteractable interactable = null;
+            DestroyableComponent interactable = null;
             foreach (var item in m_interactables)
             {
                 if( interactable == null || 
@@ -84,7 +85,7 @@ namespace Components
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.TryGetComponent<IInteractable>(out var component))
+            if (other.TryGetComponent<DestroyableComponent>(out var component))
             {
                 m_interactables.Add(component);
                 SelectClosestInteractable();
@@ -92,7 +93,7 @@ namespace Components
         }
         private void OnTriggerExit(Collider other)
         {
-            if (other.TryGetComponent<IInteractable>(out var component))
+            if (other.TryGetComponent<DestroyableComponent>(out var component))
             {
                 m_interactables.Remove(component);
                 SelectClosestInteractable();

@@ -19,9 +19,9 @@ namespace Components
             m_parentTransform = parent;
         }
 
-        public List<IInteractable> SpawnObjects()
+        public List<DestroyableComponent> SpawnObjects()
         {
-            List<IInteractable> interactables = new();
+            List<DestroyableComponent> interactables = new();
             foreach (var item in m_homeSettings.StartingInteractables)
             {
                 for (int i = 0; i < item.Count; i++)
@@ -42,7 +42,7 @@ namespace Components
                         Collider[] colliders = Physics.OverlapSphere(new Vector3(x, 0, z), radius);
                         foreach (Collider collider in colliders)
                         {
-                            if (collider.GetComponent<IInteractable>() != null) foundInteractable = true;
+                            if (collider.GetComponent<DestroyableComponent>() != null) foundInteractable = true;
                         }
                         if (++attempts > 100)
                         {
@@ -55,7 +55,7 @@ namespace Components
                     if (attempts > 100) break;
 
                     GameObject intObject = Instantiate(item.Prefab, new Vector3(x, 0, z), Quaternion.identity, m_parentTransform);
-                    var interactableComponent = intObject.GetComponent<IInteractable>();
+                    var interactableComponent = intObject.GetComponent<DestroyableComponent>();
                     interactables.Add(interactableComponent);
                 }
             }

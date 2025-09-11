@@ -27,7 +27,7 @@ namespace Models
         public int Size => m_items.Count;
         public bool HasEmptySlots => m_items.Any(i => i == null);
 
-
+        // --------------------------------------- Maybe delete or change to type and count
         public void SetItem(int index, Item item) 
         {
             if (!checkIndex(index)) 
@@ -43,10 +43,10 @@ namespace Models
 
             ItemsChanged?.Invoke();
         }
+        // ---------------------------------------
 
         private void OnItemEmptied(Item item)
         {
-            throw new NotImplementedException();
         }
 
         public void RemoveItem(int index)
@@ -57,12 +57,40 @@ namespace Models
                 return;
             }
 
-            if (m_items != null)
+            if (m_items[index] != null)
             {
                 m_items[index].Emptied -= OnItemEmptied;
             }
+
             m_items[index] = null;
             
+            ItemsChanged?.Invoke();
+        }
+        public void RemoveItem(ItemType type, int count)
+        {
+
+            Item findItem = m_items.FindLast(i => i != null && i.ItemType == type);
+
+            while (findItem != null && count > 0)
+            {
+                var (removed, remaining) = findItem.Remove(count);
+                count = remaining;
+                
+                findItem = m_items.FindLast(i => i != null && i.ItemType == type);
+            }
+
+            int emtpyIndex = m_items.IndexOf(null);
+            while (emtpyIndex != -1 && count > 0)
+            {
+                int itemCount = Math.Min(count, type.MaxStack);
+                m_items[emtpyIndex] = type.CreateItem(itemCount);
+                m_items[emtpyIndex].Emptied += OnItemEmptied;
+                count -= itemCount;
+
+                emtpyIndex = m_items.IndexOf(null, emtpyIndex + 1);
+            }
+
+
             ItemsChanged?.Invoke();
         }
 
@@ -102,11 +130,10 @@ namespace Models
             ItemsChanged?.Invoke();
             return (Count, startCount - Count);
         }
-        public (int added, int remaining) AddItem(Item item) => AddItem(item.ItemType, item.Count);
-        public void AddItems(IEnumerable<Item> items)
+        public void AddItems(IEnumerable<(ItemType type, int count)> items)
         {
-            foreach (var item in items)
-                AddItem(item);
+            foreach (var (type, count) in items)
+                AddItem(type, count);
             ItemsChanged?.Invoke();
         }
         
@@ -138,8 +165,10 @@ namespace Models
             }
 
             int emptySlotIndex = m_items.IndexOf(null);
-            Items[emptySlotIndex] = givenSlotItem.Split();
-            Items[emptySlotIndex].Emptied -= OnItemEmptied;
+
+            var (newItemType, newItemCount) = givenSlotItem.Split();
+            Items[emptySlotIndex] = newItemType.CreateItem(newItemCount);
+            
             Items[emptySlotIndex].Emptied += OnItemEmptied;
             ItemsChanged?.Invoke();
         }

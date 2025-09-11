@@ -11,9 +11,9 @@ namespace Components
         public Action InventoryOpened, InteractionStarted;
 
 
-        private PlayerController m_player;
+        private PlayerComponent m_player;
 
-        public void Initialize(PlayerController player)
+        public void Initialize(PlayerComponent player)
         {
             m_player = player;
             m_view.InteractionStarted += () => InteractionStarted?.Invoke();
@@ -26,7 +26,7 @@ namespace Components
 
             m_view.SetActiveInteractionButton(m_player.ClosestInteractable != null);
 
-            if (m_player.ClosestInteractable != null && m_player.ClosestInteractable is Destroyable dest)
+            if (m_player.ClosestInteractable != null && m_player.ClosestInteractable is DestroyableComponent dest)
                 m_view.SetInteractionProgress(dest.Progress);
             else
                 m_view.SetInteractionProgress(0);

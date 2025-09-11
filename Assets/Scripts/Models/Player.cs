@@ -12,6 +12,10 @@ namespace Models
 
         public Inventory Inventory => m_inventory;
 
+        public bool HasItem(ItemType type) => m_inventory.HasItem(type);
+        public void AddItem(ItemType type, int count = 1) => m_inventory.AddItem(type, count);
+        public void RemoveItem(ItemType type, int count = 1) => m_inventory.RemoveItem(type, count);
+
         public Player()
         {
             m_inventory = new Inventory();

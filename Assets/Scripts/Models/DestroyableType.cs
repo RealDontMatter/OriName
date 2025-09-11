@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Models
 {
     [CreateAssetMenu(menuName = "Models/DestroyableData")]
-    public class DestroyableData : InteractableData
+    public class DestroyableType : InteractableType
     {
         [SerializeField] private List<Item> m_itemsToDrop;
         [SerializeField] private int m_totalHitPoints;
@@ -20,6 +20,6 @@ namespace Models
         public int TotalHitPoints => m_totalHitPoints;
         public float HitDuration => m_hitDuration;
 
-        public virtual Destroyable CreateDestroyable() => new Destroyable(this);
+        public override Interactable CreateInteractable() => new Destroyable(this);
     }
 }

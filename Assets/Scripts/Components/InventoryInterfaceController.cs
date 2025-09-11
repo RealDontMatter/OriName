@@ -78,7 +78,7 @@ namespace Components
         {
             m_inventory.SwapItems(from, to);
         }
-        private void OnDeleteClicked() => m_inventory.SetItem(m_selectedSlot, null);
+        private void OnDeleteClicked() => m_inventory.RemoveItem(m_selectedSlot);
         private void OnSplitClicked() => m_inventory.SplitItem(m_selectedSlot);
         private void OnSlotClicked(int index) => SelectedSlot = index;
         //------------------------------------------------------------------

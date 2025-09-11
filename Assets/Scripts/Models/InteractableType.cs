@@ -7,10 +7,8 @@ using UnityEngine;
 
 namespace Models
 {
-    public class InteractableData : ScriptableObject
+    public class InteractableType : ScriptableObject
     {
-        [SerializeField] private GameObject m_prefab;
-
-        public GameObject Prefab => m_prefab;
+        public virtual Interactable CreateInteractable() => new Interactable();
     }
 }

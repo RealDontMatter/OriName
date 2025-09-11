@@ -21,7 +21,7 @@ namespace Managers
         public InterfaceMediator InterfaceMediator;
         public InventoryInterfaceController InventoryInterfaceController;
         public OverlayInterfaceController OverlayInterfaceController;
-        public PlayerController PlayerController;
+        public PlayerComponent PlayerController;
         public InteractablesSpawner InteractablesSpawner;
 
         public GameObject InteractablesParent;
@@ -42,9 +42,7 @@ namespace Managers
             m_inventory = new();
             foreach (var entry in StartingItems.Items)
             {
-                var item = entry.Type.CreateItem(entry.Count);
-                Debug.Log($"Starting item: {item.ItemType.Name}, {item.GetType()}");
-                m_inventory.AddItem(item);
+                m_inventory.AddItem(entry.Type, entry.Count);
             }
 
 
@@ -52,7 +50,7 @@ namespace Managers
 
 
             InteractablesSpawner.Initialize(HomeSettings, InteractablesParent.transform);
-            List<IInteractable> interactables = InteractablesSpawner.SpawnObjects();
+            List<DestroyableComponent> interactables = InteractablesSpawner.SpawnObjects();
             interactables.ForEach((interactable) => { 
                 interactable.Initialize(PlayerController.gameObject);
                 PlayerController.RegisterInteractable(interactable); 
