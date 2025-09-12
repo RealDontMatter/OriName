@@ -1,25 +1,28 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
+using Views;
 
 namespace Components
 {
     class OverlayInterfaceController : MonoBehaviour
     {
-        [SerializeField] Views.OverlayView m_view;
-
-        public Action InventoryOpened, InteractionStarted;
-
-
         private PlayerComponent m_player;
+        private OverlayView m_view;
+        private InventoryView m_inventoryView;
 
-        public void Initialize(PlayerComponent player)
+        public void Initialize(PlayerComponent player, OverlayView view, InventoryView inventoryView)
         {
             m_player = player;
-            m_view.InteractionStarted += () => InteractionStarted?.Invoke();
-            m_view.InventoryOpened += () => InventoryOpened?.Invoke();
+            m_view = view;
+            m_inventoryView = inventoryView;
+
+            ConnectModel();
+            ConnectView();
+            ConnectInventoryView();
         }
 
+        // General Logic ----------------------------------------------
         private void Update()
         {
             if (!m_view.IsActive) return;
@@ -31,10 +34,33 @@ namespace Components
             else
                 m_view.SetInteractionProgress(0);
         }
+        // Model connection ------------------------------------------
+        private void ConnectModel()
+        {
 
-
-        public void SetActive(bool active = true) => m_view.SetActive(active);
-
+        }
+        // View connection -------------------------------------------
+        private void ConnectView()
+        {
+            m_view.InteractionStarted += OnInteractionStarted;
+            m_view.InventoryOpened += OnInventoryOpen;
+        }
+        private void OnInventoryOpen()
+        {
+            m_view.SetActive(false);
+        }
+        private void OnInteractionStarted()
+        {
+        }
+        // Inventory View connection -----------------------------------
+        private void ConnectInventoryView()
+        {
+            m_inventoryView.ExitClicked += OnInventoryClosed;
+        }
+        private void OnInventoryClosed()
+        {
+            m_view.SetActive(true);
+        }
 
     }
 }

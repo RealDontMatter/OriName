@@ -69,12 +69,12 @@ namespace Components
                 m_model.Hit();
 
                 var toolType = m_model.DestroyableType.ToolType;
-
-                var inventory = m_playerComponent.Inventory;
-                var itemToConsume = inventory.GetItem(toolType) as ConsumableItem;
-
-                itemToConsume.Consume();
-
+                if (toolType != null)
+                {
+                    var inventory = m_playerComponent.Inventory;
+                    var itemToConsume = inventory.GetItem(toolType) as ConsumableItem;
+                    itemToConsume.Consume();
+                }
                 InteractionEnded?.Invoke();
             }
         }

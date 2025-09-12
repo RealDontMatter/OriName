@@ -7,20 +7,24 @@ namespace Components
 {
     class InventoryInterfaceController : MonoBehaviour
     {
-        public Action Closed;
-
         private InventoryView m_view;
+        private OverlayView m_overlayView;
         private Inventory m_inventory;
 
 
-        public void Initialize(Inventory inventory, InventoryView view)
+        public void Initialize(Inventory inventory, InventoryView view, OverlayView overlayView)
         {
             m_view = view;
             m_inventory = inventory;
+            m_overlayView = overlayView;
 
             ConnectModel();
             ConnectView();
+
+            ConnectOverlayView();
         }
+
+
 
         //----------------------------------------------------------
         private int m_selectedSlot = -1;
@@ -72,7 +76,7 @@ namespace Components
         public void SetActive(bool active = true) => m_view.SetActive(active);
         private void ConnectView()
         {
-            m_view.ExitClicked += () => Closed?.Invoke();
+            m_view.ExitClicked += OnExitClick;
             m_view.SlotClicked += OnSlotClicked;
             m_view.SplitClicked += OnSplitClicked;
             m_view.DeleteClicked += OnDeleteClicked;
@@ -89,6 +93,19 @@ namespace Components
         private void OnDeleteClicked() => m_inventory.RemoveItem(m_selectedSlot);
         private void OnSplitClicked() => m_inventory.SplitItem(m_selectedSlot);
         private void OnSlotClicked(int index) => SelectedSlot = index;
+        private void OnExitClick()
+        {
+            m_view.SetActive(false);
+        }
+        //-------------------------
+        private void ConnectOverlayView()
+        {
+            m_overlayView.InventoryOpened += OnInventoryOpen;
+        }
+        private void OnInventoryOpen()
+        {
+            m_view.SetActive(true);
+        }
         //------------------------------------------------------------------
     }
 }

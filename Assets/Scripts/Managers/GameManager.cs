@@ -18,9 +18,9 @@ namespace Managers
         public Views.InventoryView InventoryView;
         public Views.OverlayView OverlayView;
 
-        public InterfaceMediator InterfaceMediator;
         public InventoryInterfaceController InventoryInterfaceController;
         public OverlayInterfaceController OverlayInterfaceController;
+
         public PlayerComponent PlayerController;
         public InteractablesSpawner InteractablesSpawner;
 
@@ -60,9 +60,8 @@ namespace Managers
             OverlayView.Initialize();
             InventoryView.Initialize(m_inventory.Size);
 
-            OverlayInterfaceController.Initialize(PlayerController);
-            InventoryInterfaceController.Initialize(m_inventory, InventoryView);
-            InterfaceMediator.Initialize();
+            OverlayInterfaceController.Initialize(PlayerController, OverlayView, InventoryView);
+            InventoryInterfaceController.Initialize(m_inventory, InventoryView, OverlayView);
         }
     }
 }
