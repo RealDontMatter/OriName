@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Items:
   - Type: {fileID: 11400000, guid: 4f01c08c53307aa44a409f4c3f9c0390, type: 2}
-    Count: 10
+    Count: 120
   - Type: {fileID: 11400000, guid: 028223c0cb4acb84c9bdfe11edc4e852, type: 2}
-    Count: 12
+    Count: 80
   - Type: {fileID: 11400000, guid: 1294790668d595b4db89675eb241f58c, type: 2}
     Count: 1

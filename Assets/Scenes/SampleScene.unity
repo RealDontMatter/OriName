@@ -445,7 +445,7 @@ Canvas:
   m_RenderMode: 0
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
-  m_PixelPerfect: 0
+  m_PixelPerfect: 1
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
@@ -976,7 +976,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f44fd30d8fdadd4380ddb4de00a48be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_view: {fileID: 3812656776459455348}
 --- !u!224 &3812656776459455347 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3712355696832689323, guid: daafacfdf8ae5eb45a76f643d8709ffb, type: 3}
@@ -1023,7 +1022,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   InventoryView: {fileID: 4096307676596372021}
   OverlayView: {fileID: 3812656776459455348}
-  InterfaceMediator: {fileID: 6869550697920011498}
   InventoryInterfaceController: {fileID: 4752468696879233358}
   OverlayInterfaceController: {fileID: 1284368091900383016}
   PlayerController: {fileID: 2095544795}
@@ -1165,20 +1163,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9148567bc0cea3f41ac431a7343afb29, type: 3}
---- !u!114 &6869550697920011498
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7007880759097646422}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2db6d01fc70c03b459109512fbb98c44, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  InventoryInterfaceController: {fileID: 4752468696879233358}
-  OverlayInterfaceController: {fileID: 1284368091900383016}
 --- !u!1 &7007880759097646422
 GameObject:
   m_ObjectHideFlags: 0
@@ -1188,7 +1172,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 847491545246277668}
-  - component: {fileID: 6869550697920011498}
   - component: {fileID: 4752468696879233358}
   - component: {fileID: 1284368091900383016}
   m_Layer: 0
@@ -1206,6 +1189,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 372618594}
     m_Modifications:
+    - target: {fileID: 2562971307427305960, guid: 53b05a217c470e249afff0d57d0cd1d4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3264436478949891783, guid: 53b05a217c470e249afff0d57d0cd1d4, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
