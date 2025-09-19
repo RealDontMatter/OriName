@@ -17,9 +17,11 @@ namespace Managers
 
         public Views.InventoryView InventoryView;
         public Views.OverlayView OverlayView;
+        public Views.CrateView CrateView;
 
         public InventoryInterfaceController InventoryInterfaceController;
         public OverlayInterfaceController OverlayInterfaceController;
+        public CrateController CrateController;
 
         public PlayerComponent PlayerController;
         public InteractablesSpawner InteractablesSpawner;
@@ -60,8 +62,9 @@ namespace Managers
             OverlayView.Initialize();
             InventoryView.Initialize(m_inventory.Size);
 
-            OverlayInterfaceController.Initialize(PlayerController, OverlayView, InventoryView);
+            OverlayInterfaceController.Initialize(PlayerController, OverlayView, InventoryView, CrateView);
             InventoryInterfaceController.Initialize(m_inventory, InventoryView, OverlayView);
+            CrateController.Initialize(m_inventory, CrateView, OverlayView);
         }
     }
 }

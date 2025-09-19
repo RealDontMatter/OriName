@@ -10,17 +10,27 @@ namespace Components
         private PlayerComponent m_player;
         private OverlayView m_view;
         private InventoryView m_inventoryView;
+        private CrateView m_crateView;
 
-        public void Initialize(PlayerComponent player, OverlayView view, InventoryView inventoryView)
+        public void Initialize(
+            PlayerComponent player, 
+            OverlayView view, 
+            InventoryView inventoryView,
+            CrateView crateView
+            )
         {
             m_player = player;
             m_view = view;
             m_inventoryView = inventoryView;
+            m_crateView = crateView;
 
             ConnectModel();
             ConnectView();
             ConnectInventoryView();
+            ConnectCrateView();
         }
+
+        
 
         // General Logic ----------------------------------------------
         private void Update()
@@ -61,6 +71,14 @@ namespace Components
         {
             m_view.SetActive(true);
         }
-
+        // Crate View connection ---------------------------------------
+        private void ConnectCrateView()
+        {
+            m_crateView.Closed += OnCrateClosed;
+        }
+        private void OnCrateClosed()
+        {
+            m_view.SetActive(true);
+        }
     }
 }

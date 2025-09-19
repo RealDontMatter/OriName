@@ -12,13 +12,15 @@ namespace Views
         [SerializeField] private Button m_interactionButton;
         [SerializeField] private Image m_interactionHandImage;
         [SerializeField] private Image m_interactionRadialImage;
+        [SerializeField] private Button m_crateButton;
 
-        public Action InteractionStarted, InventoryOpened;
+        public Action InteractionStarted, InventoryOpened, CrateOpened;
 
         public void Initialize()
         {
             m_interactionButton.onClick.AddListener(() => InteractionStarted?.Invoke());
             m_inventoryButton.onClick.AddListener(() => InventoryOpened?.Invoke());
+            m_crateButton.onClick.AddListener(() => CrateOpened?.Invoke());
         }
 
         public void SetActive(bool active = true) => m_view.SetActive(active);
